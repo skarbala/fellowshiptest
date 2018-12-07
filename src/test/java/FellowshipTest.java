@@ -3,7 +3,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -27,7 +26,9 @@ public class FellowshipTest {
     String expectedInitialValue = "25";
     String actualInitialValue = driver.findElement(By.cssSelector("div.points-left h2")).getText();
 
-    Assert.assertEquals(expectedInitialValue, actualInitialValue);
+    assertThat(actualInitialValue)
+        .as("Checking the initial value of points")
+        .isEqualTo(expectedInitialValue);
   }
 
   @Test
@@ -48,7 +49,8 @@ public class FellowshipTest {
             "Boromir",
             "Meriadoc",
             "Peregrin"
-        );
+        )
+        .doesNotContain("Bozanka");
   }
 
   @Test
@@ -59,11 +61,11 @@ public class FellowshipTest {
         .map(fellowAge -> fellowAge.replace("Age:", "").trim())
         .collect(Collectors.toList());
 
-    Assert.assertFalse(fellowMembersAgeList.isEmpty());
-    fellowMembersAgeList.forEach(fellowMembersAge -> {
-      Assert.assertFalse(fellowMembersAge.equals(""));
-      Assert.assertFalse(fellowMembersAge.isEmpty());
-    });
+    fellowMembersAgeList.forEach(fellowShipMemberAge -> assertThat(fellowShipMemberAge)
+        .isNotEmpty()
+        .isNotBlank()
+        .isNotNull()
+    );
   }
 
   @Test
@@ -76,8 +78,21 @@ public class FellowshipTest {
         .map(webElement -> webElement.findElement(By.cssSelector("h1")).getText())
         .collect(Collectors.toList());
 
-    for (String hobbit : hobbits) {
-      Assert.assertTrue(actualHobbits.contains(hobbit));
-    }
+    assertThat(actualHobbits).containsOnly(hobbits).doesNotContain("Martin Jakubec");
+  }
+
+
+  @Test
+  public void shouldContainOnlySpecificHobbitsFilterNummeroTwo() {
+    String[] hobbits = {"Frodo", "Samwise", "Meriadoc", "Peregrin"};
+
+    assertThat(driver.findElements(By.cssSelector("ul.list-of-fellows li")))
+        .filteredOn(webElement -> webElement
+            .findElement(By.cssSelector("h2:nth-child(2)"))
+            .getText()
+            .contains("Hobbit"))
+        .extracting(webElement -> webElement.findElement(By.cssSelector("h1")).getText())
+        .contains(hobbits)
+        .doesNotContain("Martin Jakubec");
   }
 }
