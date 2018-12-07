@@ -75,5 +75,19 @@ public class FellowshipTest {
     for (String hobbit : hobbits) {
       Assert.assertTrue(actualHobbits.contains(hobbit));
     }
+    Assert.assertFalse(actualHobbits.contains("Martin Jakubec"));
+    Assert.assertFalse(actualHobbits.contains("Sauron"));
+  }
+
+  @Test
+  public void shouldBeAbleToSelectFellows() {
+    String[] fellowsToSelect = {"Frodo", "Gandalf", "Legolas", "Aragorn"};
+
+    for (String fellow : fellowsToSelect) {
+      driver.findElement(By.xpath("//div[h1[contains(text(),'" + fellow + "')]]")).click();
+    }
+    Assert.assertEquals("complete", driver.findElement(By.cssSelector("div.points-left h3"))
+        .getText()
+        .toLowerCase());
   }
 }
