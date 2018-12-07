@@ -1,3 +1,5 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,17 +36,19 @@ public class FellowshipTest {
         .stream()
         .map(WebElement::getText)
         .collect(Collectors.toList());
-
-    Assert.assertEquals(9, fellowMembers.size());
-    Assert.assertTrue(fellowMembers.contains("Frodo"));
-    Assert.assertTrue(fellowMembers.contains("Samwise"));
-    Assert.assertTrue(fellowMembers.contains("Gandalf"));
-    Assert.assertTrue(fellowMembers.contains("Legolas"));
-    Assert.assertTrue(fellowMembers.contains("Gimli"));
-    Assert.assertTrue(fellowMembers.contains("Aragron"));
-    Assert.assertTrue(fellowMembers.contains("Boromir"));
-    Assert.assertTrue(fellowMembers.contains("Meriadoc"));
-    Assert.assertTrue(fellowMembers.contains("Peregrin"));
+    assertThat(fellowMembers)
+        .hasSize(9)
+        .containsOnly(
+            "Frodo",
+            "Samwise",
+            "Gandalf",
+            "Legolas",
+            "Gimli",
+            "Aragron",
+            "Boromir",
+            "Meriadoc",
+            "Peregrin"
+        );
   }
 
   @Test
